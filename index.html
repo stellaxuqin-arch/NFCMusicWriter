@@ -1,28 +1,1323 @@
-<!doctype html>
+```html
+<!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>说爱你（交响乐版）</title>
-<style>
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f5f5f5;font-family:Arial,"Microsoft YaHei",sans-serif}
-.card{width:min(90%,420px);box-sizing:border-box;background:#fff;padding:32px 24px;border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,.08);text-align:center}
-h1{font-size:24px;margin:0 0 12px}
-p{color:#777;margin:0 0 26px}
-audio{width:100%}
-a{display:inline-block;margin-top:22px;padding:12px 18px;border-radius:10px;background:#222;color:#fff;text-decoration:none}
-</style>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0,
+                   maximum-scale=1.0,
+                   user-scalable=no">
+
+    <meta name="theme-color" content="#09090d">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="description"
+          content="说爱你 · 交响乐版">
+
+    <title>说爱你 · 交响乐版</title>
+
+    <style>
+
+        /* =========================
+           基础设置
+        ========================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            background: #09090d;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+
+            color: #ffffff;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "SF Pro Display",
+                "SF Pro Text",
+                "PingFang SC",
+                "Microsoft YaHei",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 50% 12%,
+                    rgba(255, 120, 170, 0.18),
+                    transparent 34%
+                ),
+                radial-gradient(
+                    circle at 20% 85%,
+                    rgba(110, 80, 180, 0.10),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    155deg,
+                    #08080c 0%,
+                    #111118 48%,
+                    #08080c 100%
+                );
+
+            overflow-x: hidden;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .page {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+
+            display: flex;
+            justify-content: center;
+
+            padding:
+                max(28px, env(safe-area-inset-top))
+                22px
+                max(30px, env(safe-area-inset-bottom));
+        }
+
+        .container {
+            width: 100%;
+            max-width: 430px;
+
+            text-align: center;
+
+            padding-top: 8px;
+
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+
+        /* =========================
+           NFC 顶部提示
+        ========================= */
+
+        .nfc-badge {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 8px 14px;
+
+            border:
+                1px solid rgba(255,255,255,0.10);
+
+            border-radius: 999px;
+
+            background:
+                rgba(255,255,255,0.045);
+
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+
+            color:
+                rgba(255,255,255,0.62);
+
+            font-size: 11px;
+
+            letter-spacing: 1.4px;
+
+            margin-bottom: 27px;
+        }
+
+        .nfc-dot {
+            width: 7px;
+            height: 7px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background: #ff8db5;
+
+            box-shadow:
+                0 0 12px
+                rgba(255,141,181,0.85);
+
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+
+        /* =========================
+           唱片区域
+        ========================= */
+
+        .record-wrapper {
+            position: relative;
+
+            width: min(78vw, 300px);
+            height: min(78vw, 300px);
+
+            margin: 0 auto 34px;
+        }
+
+        .record-glow {
+            position: absolute;
+
+            inset: 15%;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 105, 155, 0.18);
+
+            filter: blur(35px);
+
+            opacity: 0.6;
+
+            transition:
+                opacity 0.5s ease;
+        }
+
+        .record {
+            position: relative;
+
+            width: 100%;
+            height: 100%;
+
+            border-radius: 50%;
+
+            background:
+                repeating-radial-gradient(
+                    circle,
+                    #17171c 0px,
+                    #17171c 2px,
+                    #0e0e12 3px,
+                    #0e0e12 6px
+                );
+
+            box-shadow:
+                0 28px 65px
+                rgba(0,0,0,0.62),
+
+                inset 0 0 0 1px
+                rgba(255,255,255,0.05);
+
+            animation:
+                recordRotate 12s linear infinite;
+
+            animation-play-state: paused;
+
+            overflow: hidden;
+        }
+
+        .record.playing {
+            animation-play-state: running;
+        }
+
+        .record::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 8%;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,255,255,0.05),
+                    transparent 35%,
+                    rgba(255,255,255,0.025)
+                );
+
+            pointer-events: none;
+        }
+
+        .record-center {
+            position: absolute;
+
+            width: 34%;
+
+            aspect-ratio: 1;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 0 25px
+                rgba(255,120,160,0.28);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff9dbb,
+                    #c74d79
+                );
+        }
+
+        .record-center img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+        }
+
+        .record-hole {
+            position: absolute;
+
+            width: 9px;
+            height: 9px;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background: #0b0b0f;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(255,255,255,0.10);
+        }
+
+
+        /* =========================
+           歌曲信息
+        ========================= */
+
+        .song-title {
+            font-size: 31px;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+
+            line-height: 1.25;
+
+            margin-bottom: 7px;
+        }
+
+        .song-artist {
+            color:
+                rgba(255,255,255,0.50);
+
+            font-size: 14px;
+
+            letter-spacing: 3px;
+
+            margin-bottom: 28px;
+        }
+
+
+        /* =========================
+           播放器
+        ========================= */
+
+        .player {
+            width: 100%;
+
+            padding:
+                18px 18px 17px;
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            border-radius: 24px;
+
+            background:
+                rgba(255,255,255,0.045);
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 18px 50px
+                rgba(0,0,0,0.25);
+        }
+
+        /* 进度条 */
+
+        .progress-area {
+            width: 100%;
+
+            padding: 8px 0;
+
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            position: relative;
+
+            width: 100%;
+            height: 5px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(255,255,255,0.12);
+
+            overflow: visible;
+        }
+
+        .progress-fill {
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 0%;
+            height: 100%;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ff91b5,
+                    #e76693
+                );
+        }
+
+        .progress-dot {
+            position: absolute;
+
+            width: 13px;
+            height: 13px;
+
+            left: 0;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0,0,0,0.35);
+
+            transition:
+                left 0.08s linear;
+        }
+
+        .time-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-top: 7px;
+
+            font-size: 11px;
+
+            color:
+                rgba(255,255,255,0.38);
+        }
+
+
+        /* =========================
+           控制区域
+        ========================= */
+
+        .controls {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 18px;
+
+            margin-top: 13px;
+        }
+
+        .control-button {
+            border: none;
+
+            background: transparent;
+
+            color:
+                rgba(255,255,255,0.65);
+
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            border-radius: 50%;
+
+            transition:
+                transform 0.15s ease,
+                background 0.15s ease;
+        }
+
+        .control-button:active {
+            transform: scale(0.88);
+        }
+
+        .main-play {
+            width: 66px;
+            height: 66px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff9abd,
+                    #d95c87
+                );
+
+            font-size: 25px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 12px 32px
+                rgba(217,92,135,0.35);
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .main-play:active {
+            transform: scale(0.91);
+        }
+
+        .main-play:hover {
+            box-shadow:
+                0 16px 40px
+                rgba(217,92,135,0.45);
+        }
+
+        .play-icon {
+            margin-left: 3px;
+        }
+
+
+        /* =========================
+           底部按钮
+        ========================= */
+
+        .actions {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+        .action-button {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 6px;
+
+            min-width: 104px;
+
+            padding: 10px 15px;
+
+            border-radius: 999px;
+
+            border:
+                1px solid rgba(255,255,255,0.10);
+
+            background:
+                rgba(255,255,255,0.045);
+
+            color:
+                rgba(255,255,255,0.68);
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .action-button:hover {
+            background:
+                rgba(255,255,255,0.09);
+        }
+
+        .action-button:active {
+            transform: scale(0.96);
+        }
+
+
+        /* =========================
+           提示文字
+        ========================= */
+
+        .hint {
+            margin-top: 25px;
+
+            font-size: 12px;
+
+            color:
+                rgba(255,255,255,0.34);
+
+            line-height: 1.7;
+        }
+
+        .footer {
+            margin-top: 34px;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+
+            color:
+                rgba(255,255,255,0.18);
+        }
+
+
+        /* =========================
+           Toast
+        ========================= */
+
+        .toast {
+            position: fixed;
+
+            left: 50%;
+            bottom: 30px;
+
+            transform:
+                translate(-50%, 20px);
+
+            padding: 10px 17px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(25,25,32,0.94);
+
+            border:
+                1px solid rgba(255,255,255,0.10);
+
+            color:
+                rgba(255,255,255,0.82);
+
+            font-size: 12px;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transition:
+                opacity 0.25s ease,
+                transform 0.25s ease;
+
+            z-index: 100;
+        }
+
+        .toast.show {
+            opacity: 1;
+
+            transform:
+                translate(-50%, 0);
+        }
+
+
+        /* =========================
+           动画
+        ========================= */
+
+        @keyframes recordRotate {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+        @keyframes pulse {
+
+            0%, 100% {
+                opacity: 0.45;
+                transform: scale(0.9);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.15);
+            }
+
+        }
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* =========================
+           手机小屏优化
+        ========================= */
+
+        @media (max-width: 380px) {
+
+            .page {
+                padding-left: 17px;
+                padding-right: 17px;
+            }
+
+            .record-wrapper {
+                width: 220px;
+                height: 220px;
+
+                margin-bottom: 28px;
+            }
+
+            .song-title {
+                font-size: 27px;
+            }
+
+            .player {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .main-play {
+                width: 60px;
+                height: 60px;
+            }
+
+            .controls {
+                gap: 12px;
+            }
+
+        }
+
+    </style>
 </head>
+
+
 <body>
-<div class="card">
-<h1>说爱你（交响乐版）</h1>
-<p>Tap NFC to listen</p>
-<audio controls preload="metadata">
-<source src="music.mp3" type="audio/mpeg">
-您的浏览器不支持音频播放。
-</audio>
-<br>
-<a href="music.mp3" download>下载 MP3</a>
+
+<div class="page">
+
+    <main class="container">
+
+
+        <!-- NFC 提示 -->
+
+        <div class="nfc-badge">
+
+            <span class="nfc-dot"></span>
+
+            NFC · TAP TO LISTEN
+
+        </div>
+
+
+        <!-- 黑胶唱片 -->
+
+        <div class="record-wrapper">
+
+            <div class="record-glow"
+                 id="recordGlow">
+            </div>
+
+            <div class="record"
+                 id="record">
+
+                <div class="record-center">
+
+                    <img src="cover.jpg"
+                         alt="Album Cover"
+                         onerror="this.style.display='none';">
+
+                </div>
+
+                <div class="record-hole"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 歌曲信息 -->
+
+        <h1 class="song-title">
+            说爱你
+        </h1>
+
+        <div class="song-artist">
+            交响乐版
+        </div>
+
+
+        <!-- 音乐播放器 -->
+
+        <section class="player">
+
+
+            <!-- HTML Audio -->
+
+            <audio id="audio"
+                   src="music.mp3"
+                   preload="metadata">
+            </audio>
+
+
+            <!-- 进度 -->
+
+            <div class="progress-area"
+                 id="progressArea">
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill"
+                         id="progressFill">
+                    </div>
+
+                    <div class="progress-dot"
+                         id="progressDot">
+                    </div>
+
+                </div>
+
+                <div class="time-row">
+
+                    <span id="currentTime">
+                        0:00
+                    </span>
+
+                    <span id="duration">
+                        0:00
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- 控制按钮 -->
+
+            <div class="controls">
+
+
+                <!-- 后退 -->
+
+                <button class="control-button"
+                        id="backButton"
+                        aria-label="后退10秒">
+
+                    ↶
+
+                </button>
+
+
+                <!-- 播放 -->
+
+                <button class="main-play"
+                        id="playButton"
+                        aria-label="播放">
+
+                    <span class="play-icon"
+                          id="playIcon">
+                        ▶
+                    </span>
+
+                </button>
+
+
+                <!-- 前进 -->
+
+                <button class="control-button"
+                        id="forwardButton"
+                        aria-label="前进10秒">
+
+                    ↷
+
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- 下载 / 分享 -->
+
+        <div class="actions">
+
+
+            <a class="action-button"
+               href="music.mp3"
+               download>
+
+                ↓ 下载音乐
+
+            </a>
+
+
+            <button class="action-button"
+                    id="shareButton">
+
+                ↗ 分享
+
+            </button>
+
+
+        </div>
+
+
+        <!-- 提示 -->
+
+        <div class="hint">
+
+            轻触 NFC 标签即可打开音乐<br>
+
+            点击中央按钮开始播放
+
+        </div>
+
+
+        <div class="footer">
+
+            NFC MUSIC CARD
+
+        </div>
+
+
+    </main>
+
 </div>
+
+
+<!-- Toast -->
+
+<div class="toast"
+     id="toast">
+</div>
+
+
+<script>
+
+    /* =========================
+       获取元素
+    ========================= */
+
+    const audio =
+        document.getElementById("audio");
+
+    const playButton =
+        document.getElementById("playButton");
+
+    const playIcon =
+        document.getElementById("playIcon");
+
+    const record =
+        document.getElementById("record");
+
+    const recordGlow =
+        document.getElementById("recordGlow");
+
+    const progressArea =
+        document.getElementById("progressArea");
+
+    const progressFill =
+        document.getElementById("progressFill");
+
+    const progressDot =
+        document.getElementById("progressDot");
+
+    const currentTime =
+        document.getElementById("currentTime");
+
+    const duration =
+        document.getElementById("duration");
+
+    const backButton =
+        document.getElementById("backButton");
+
+    const forwardButton =
+        document.getElementById("forwardButton");
+
+    const shareButton =
+        document.getElementById("shareButton");
+
+    const toast =
+        document.getElementById("toast");
+
+
+    /* =========================
+       时间格式
+    ========================= */
+
+    function formatTime(seconds) {
+
+        if (!isFinite(seconds)) {
+            return "0:00";
+        }
+
+        const minutes =
+            Math.floor(seconds / 60);
+
+        const secs =
+            Math.floor(seconds % 60)
+                .toString()
+                .padStart(2, "0");
+
+        return `${minutes}:${secs}`;
+
+    }
+
+
+    /* =========================
+       Toast
+    ========================= */
+
+    let toastTimer;
+
+    function showToast(message) {
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+        clearTimeout(toastTimer);
+
+        toastTimer =
+            setTimeout(() => {
+
+                toast.classList.remove("show");
+
+            }, 2200);
+
+    }
+
+
+    /* =========================
+       播放 / 暂停
+    ========================= */
+
+    playButton.addEventListener(
+        "click",
+        async function () {
+
+            try {
+
+                if (audio.paused) {
+
+                    await audio.play();
+
+                } else {
+
+                    audio.pause();
+
+                }
+
+            } catch (error) {
+
+                showToast("请再次点击播放");
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       播放状态
+    ========================= */
+
+    audio.addEventListener(
+        "play",
+        function () {
+
+            playIcon.textContent = "Ⅱ";
+
+            record.classList.add("playing");
+
+            recordGlow.style.opacity = "1";
+
+        }
+    );
+
+
+    audio.addEventListener(
+        "pause",
+        function () {
+
+            playIcon.textContent = "▶";
+
+            record.classList.remove("playing");
+
+            recordGlow.style.opacity = "0.6";
+
+        }
+    );
+
+
+    audio.addEventListener(
+        "ended",
+        function () {
+
+            playIcon.textContent = "▶";
+
+            record.classList.remove("playing");
+
+            recordGlow.style.opacity = "0.6";
+
+            progressFill.style.width = "0%";
+
+            progressDot.style.left = "0%";
+
+            currentTime.textContent = "0:00";
+
+        }
+    );
+
+
+    /* =========================
+       音频加载完成
+    ========================= */
+
+    audio.addEventListener(
+        "loadedmetadata",
+        function () {
+
+            duration.textContent =
+                formatTime(audio.duration);
+
+        }
+    );
+
+
+    /* =========================
+       更新进度
+    ========================= */
+
+    audio.addEventListener(
+        "timeupdate",
+        function () {
+
+            if (!audio.duration) {
+                return;
+            }
+
+            const percent =
+                (audio.currentTime /
+                 audio.duration) * 100;
+
+            progressFill.style.width =
+                percent + "%";
+
+            progressDot.style.left =
+                percent + "%";
+
+            currentTime.textContent =
+                formatTime(audio.currentTime);
+
+        }
+    );
+
+
+    /* =========================
+       点击进度条跳转
+    ========================= */
+
+    progressArea.addEventListener(
+        "click",
+        function (event) {
+
+            if (!audio.duration) {
+                return;
+            }
+
+            const rect =
+                progressArea.getBoundingClientRect();
+
+            const clickPosition =
+                event.clientX - rect.left;
+
+            const percent =
+                Math.max(
+                    0,
+                    Math.min(
+                        1,
+                        clickPosition / rect.width
+                    )
+                );
+
+            audio.currentTime =
+                percent * audio.duration;
+
+        }
+    );
+
+
+    /* =========================
+       后退10秒
+    ========================= */
+
+    backButton.addEventListener(
+        "click",
+        function () {
+
+            audio.currentTime =
+                Math.max(
+                    0,
+                    audio.currentTime - 10
+                );
+
+        }
+    );
+
+
+    /* =========================
+       前进10秒
+    ========================= */
+
+    forwardButton.addEventListener(
+        "click",
+        function () {
+
+            audio.currentTime =
+                Math.min(
+                    audio.duration || 0,
+                    audio.currentTime + 10
+                );
+
+        }
+    );
+
+
+    /* =========================
+       分享
+    ========================= */
+
+    shareButton.addEventListener(
+        "click",
+        async function () {
+
+            const shareData = {
+
+                title: "说爱你 · 交响乐版",
+
+                text: "NFC Music Card",
+
+                url: window.location.href
+
+            };
+
+
+            if (
+                navigator.share &&
+                typeof navigator.share === "function"
+            ) {
+
+                try {
+
+                    await navigator.share(shareData);
+
+                } catch (error) {
+
+                    /* 用户取消分享，不提示 */
+
+                }
+
+            } else {
+
+                try {
+
+                    await navigator.clipboard.writeText(
+                        window.location.href
+                    );
+
+                    showToast("音乐链接已复制");
+
+                } catch (error) {
+
+                    showToast("请复制浏览器地址分享");
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       页面加载
+    ========================= */
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            recordGlow.style.opacity = "0.6";
+
+        }
+    );
+
+</script>
+
 </body>
+
 </html>
+```
